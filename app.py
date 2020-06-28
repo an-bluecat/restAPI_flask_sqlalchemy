@@ -7,13 +7,14 @@ import os
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 # Database
-ENV = 'release'
+ENV = 'prod'
 if ENV == 'dev':
     app.debug = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123@localhost/lexus'
 else:
     app.debug = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://hkggwmbvqnpith:2bf93495c3d7d025d056505fc55dea78ab216033c1202fa52e4ff5bc150c6867@ec2-34-195-169-25.compute-1.amazonaws.com:5432/dakitgbmj0cjje'
+    # get it with: heroku config --app restapipostgre
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://bzsgdtmbfuwwwp:26d6e3d55f0b56c0efbf1a65176962e267d94a905c6ba4196ef5c6a438085096@ec2-34-197-188-147.compute-1.amazonaws.com:5432/d4ljc28eih0k69'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
