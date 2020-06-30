@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 # Database
-ENV = 'prod'
+ENV = 'dev'
 if ENV == 'dev':
     app.debug = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123@localhost/lexus'
@@ -47,10 +47,37 @@ class ProductSchema(ma.Schema):
 product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)
 
-for i in range(0,3,1):
-    @app.route('/'+str(i), methods=['GET'])
-    def get():
-      return jsonify({"msg":"hello"})
+
+# @app.route('/', methods=['GET'])
+# def get():
+#   return jsonify({"msg":"hello"})
+
+# def my_func():
+#     return jsonify({"msg":"hello"})
+
+
+# routes = [
+#     dict(route="/", func="index", page="index"),
+#     dict(route="/about", func="about", page="about")
+# ]
+
+# for route in routes:
+#     app.add_url_rule(
+#         route["route"], #I believe this is the actual url
+#         route["page"], # this is the name used for url_for (from the docs)
+#     )
+#     app.view_functions[route["page"]] = my_func()
+def get_products1(argin):
+  all_products = argin.query.all()
+  result = products_schema.dump(all_products)
+  return jsonify(result)
+
+@app.route('/<page>')
+def index(page):
+  if page=='about':
+     return get_products1(Product)
+  elif page =="test":
+     return jsonify({"msg":"test"})
 
 # Create a Product
 
