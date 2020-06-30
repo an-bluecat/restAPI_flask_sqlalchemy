@@ -2,6 +2,16 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy 
 from flask_marshmallow import Marshmallow 
 import os
+from sqlalchemy.ext.declarative import declarative_base
+
+# Base = declarative_base()
+
+# class Myproduct1(Product, Base):
+#     __tablename__ = 'product1'
+  
+# class Myproduct2(Product, Base):
+#     __tablename__ = 'product2'
+
 
 # Init app
 app = Flask(__name__)
@@ -24,8 +34,23 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
 # Product Class/Model
+class ECE110(db.Model):
+  __tablename__ = 'ECE110'
+  id = db.Column(db.Integer, primary_key=True)
+  user = db.Column(db.String(100), unique=True)
+  comment = db.Column(db.String(200))
+  time = db.Column(db.String(50))
+  likes = db.Column(db.Integer)
+
+
+  def __init__(self, user, comment, time, likes):
+    self.user = user
+    self.comment = comment
+    self.time = time
+    self.likes = likes
+
 class Product(db.Model):
-  __tablename__ = 'product'
+  __tablename__ = 'product3'
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(100), unique=True)
   description = db.Column(db.String(200))
@@ -38,10 +63,12 @@ class Product(db.Model):
     self.price = price
     self.qty = qty
 
+
+
 # Product Schema
 class ProductSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'name', 'description', 'price', 'qty')
+    fields = ('id', 'user', 'comment', 'time', 'likes')
 
 # Init schema
 product_schema = ProductSchema()
@@ -72,28 +99,45 @@ def get_products1(argin):
   result = products_schema.dump(all_products)
   return jsonify(result)
 
-@app.route('/<page>')
-def index(page):
-  if page=='about':
-     return get_products1(Product)
-  elif page =="test":
-     return jsonify({"msg":"test"})
+def add_product(className):
+  user = request.json['user']
+  comment = request.json['comment']
+  time = request.json['time']
+  likes = request.json['likes']
 
-# Create a Product
-
-@app.route('/product', methods=['POST'])
-def add_product():
-  name = request.json['name']
-  description = request.json['description']
-  price = request.json['price']
-  qty = request.json['qty']
-
-  new_product = Product(name, description, price, qty)
+  new_product = ECE110(user, comment, time, likes)
 
   db.session.add(new_product)
   db.session.commit()
 
   return product_schema.jsonify(new_product)
+
+
+@app.route('/<page>',methods=['GET'])
+def index(page):
+    return get_products1(eval(page)) #page is a string, needs to convert to class
+
+@app.route('/<page>', methods=['POST'])
+def post(page):
+    return add_product(eval(page)) #page is a string, needs to convert to class
+
+
+
+# Create a Product
+
+# @app.route('/product', methods=['POST'])
+# def add_product():
+#   name = request.json['name']
+#   description = request.json['description']
+#   price = request.json['price']
+#   qty = request.json['qty']
+
+#   new_product = Product(name, description, price, qty)
+
+#   db.session.add(new_product)
+#   db.session.commit()
+
+#   return product_schema.jsonify(new_product)
 
 # Get All Products
 @app.route('/product', methods=['GET'])
