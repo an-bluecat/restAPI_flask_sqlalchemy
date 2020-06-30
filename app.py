@@ -47,9 +47,10 @@ class ProductSchema(ma.Schema):
 product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)
 
-@app.route('/', methods=['GET'])
-def get():
-  return jsonify({"msg":"hello"})
+for i in range(0,3,1):
+    @app.route('/'+str(i), methods=['GET'])
+    def get():
+      return jsonify({"msg":"hello"})
 
 # Create a Product
 
