@@ -17,7 +17,7 @@ from sqlalchemy.ext.declarative import declarative_base
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 # Database
-ENV = 'dev'
+ENV = 'd'
 if ENV == 'dev':
     app.debug = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123@localhost/lexus'
