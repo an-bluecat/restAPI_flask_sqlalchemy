@@ -17,7 +17,7 @@ from sqlalchemy.ext.declarative import declarative_base
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 # Database
-ENV = 'd'
+ENV = 'dev'
 if ENV == 'dev':
     app.debug = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123@localhost/lexus'
@@ -37,7 +37,7 @@ ma = Marshmallow(app)
 class ECE110(db.Model):
   __tablename__ = 'ECE110'
   id = db.Column(db.Integer, primary_key=True)
-  user = db.Column(db.String(100), unique=True)
+  user = db.Column(db.String(100))
   comment = db.Column(db.String(200))
   time = db.Column(db.String(50))
   likes = db.Column(db.Integer)
@@ -49,136 +49,124 @@ class ECE110(db.Model):
     self.time = time
     self.likes = likes
 
-class Product(db.Model):
-  __tablename__ = 'product3'
+class ECE297(db.Model):
+  __tablename__ = 'ECE297'
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(100), unique=True)
-  description = db.Column(db.String(200))
-  price = db.Column(db.Float)
-  qty = db.Column(db.Integer)
+  user = db.Column(db.String(100))
+  comment = db.Column(db.String(200))
+  time = db.Column(db.String(50))
+  likes = db.Column(db.Integer)
 
-  def __init__(self, name, description, price, qty):
-    self.name = name
-    self.description = description
-    self.price = price
-    self.qty = qty
+
+  def __init__(self, user, comment, time, likes):
+    self.user = user
+    self.comment = comment
+    self.time = time
+    self.likes = likes
+
+class ECE243(db.Model):
+  __tablename__ = 'ECE243'
+  id = db.Column(db.Integer, primary_key=True)
+  user = db.Column(db.String(100))
+  comment = db.Column(db.String(200))
+  time = db.Column(db.String(50))
+  likes = db.Column(db.Integer)
+
+
+  def __init__(self, user, comment, time, likes):
+    self.user = user
+    self.comment = comment
+    self.time = time
+    self.likes = likes
+
 
 
 
 # Product Schema
-class ProductSchema(ma.Schema):
+class ratingSchema(ma.Schema):
   class Meta:
     fields = ('id', 'user', 'comment', 'time', 'likes')
 
 # Init schema
-product_schema = ProductSchema()
-products_schema = ProductSchema(many=True)
+rating_schema = ratingSchema()
+ratings_schema = ratingSchema(many=True)
 
 
-# @app.route('/', methods=['GET'])
-# def get():
-#   return jsonify({"msg":"hello"})
 
-# def my_func():
-#     return jsonify({"msg":"hello"})
-
-
-# routes = [
-#     dict(route="/", func="index", page="index"),
-#     dict(route="/about", func="about", page="about")
-# ]
-
-# for route in routes:
-#     app.add_url_rule(
-#         route["route"], #I believe this is the actual url
-#         route["page"], # this is the name used for url_for (from the docs)
-#     )
-#     app.view_functions[route["page"]] = my_func()
-def get_products1(argin):
-  all_products = argin.query.all()
-  result = products_schema.dump(all_products)
+def get_rating(argin):
+  all_ratings = argin.query.all()
+  result = ratings_schema.dump(all_ratings)
   return jsonify(result)
 
-def add_product(className):
+def add_rating(className):
   user = request.json['user']
   comment = request.json['comment']
   time = request.json['time']
   likes = request.json['likes']
 
-  new_product = ECE110(user, comment, time, likes)
+  new_rating = className(user, comment, time, likes)
 
-  db.session.add(new_product)
+  db.session.add(new_rating)
   db.session.commit()
 
-  return product_schema.jsonify(new_product)
+  return rating_schema.jsonify(new_rating)
 
+def delete_rating(page, id):
+  rating = page.query.get(id)
+  db.session.delete(rating)
+  db.session.commit()
+
+  return rating_schema.jsonify(rating)
 
 @app.route('/<page>',methods=['GET'])
 def index(page):
-    return get_products1(eval(page)) #page is a string, needs to convert to class
+    return get_rating(eval(page)) #page is a string, needs to convert to class
 
 @app.route('/<page>', methods=['POST'])
 def post(page):
-    return add_product(eval(page)) #page is a string, needs to convert to class
+    return add_rating(eval(page)) #page is a string, needs to convert to class
+
+# Delete rating
+@app.route('/<page>/<id>', methods=['DELETE'])
+def delete(page,id):
+    return delete_rating(eval(page), id)
 
 
 
-# Create a Product
 
-# @app.route('/product', methods=['POST'])
-# def add_product():
+# # Get All ratings
+# @app.route('/rating', methods=['GET'])
+# def get_ratings():
+#   all_ratings = rating.query.all()
+#   result = ratings_schema.dump(all_ratings)
+#   return jsonify(result)
+
+# # Get Single ratings
+# @app.route('/rating/<id>', methods=['GET'])
+# def get_rating(id):
+#   rating = rating.query.get(id)
+#   return rating_schema.jsonify(rating)
+
+# # Update a rating
+# @app.route('/rating/<id>', methods=['PUT'])
+# def update_rating(id):
+#   rating = rating.query.get(id)
+
 #   name = request.json['name']
 #   description = request.json['description']
 #   price = request.json['price']
 #   qty = request.json['qty']
 
-#   new_product = Product(name, description, price, qty)
+#   rating.name = name
+#   rating.description = description
+#   rating.price = price
+#   rating.qty = qty
 
-#   db.session.add(new_product)
 #   db.session.commit()
 
-#   return product_schema.jsonify(new_product)
+#   return rating_schema.jsonify(rating)
 
-# Get All Products
-@app.route('/product', methods=['GET'])
-def get_products():
-  all_products = Product.query.all()
-  result = products_schema.dump(all_products)
-  return jsonify(result)
 
-# Get Single Products
-@app.route('/product/<id>', methods=['GET'])
-def get_product(id):
-  product = Product.query.get(id)
-  return product_schema.jsonify(product)
-
-# Update a Product
-@app.route('/product/<id>', methods=['PUT'])
-def update_product(id):
-  product = Product.query.get(id)
-
-  name = request.json['name']
-  description = request.json['description']
-  price = request.json['price']
-  qty = request.json['qty']
-
-  product.name = name
-  product.description = description
-  product.price = price
-  product.qty = qty
-
-  db.session.commit()
-
-  return product_schema.jsonify(product)
-
-# Delete Product
-@app.route('/product/<id>', methods=['DELETE'])
-def delete_product(id):
-  product = Product.query.get(id)
-  db.session.delete(product)
-  db.session.commit()
-
-  return product_schema.jsonify(product)
 
 # Run Server
 if __name__ == '__main__':

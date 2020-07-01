@@ -1,6 +1,6 @@
 # REST API With Flask & SQL Alchemy
 
-> Products API using Python Flask, SQL Alchemy and Marshmallow
+> ratings API using Python Flask, SQL Alchemy and Marshmallow
 
 ## Quick Start Using Pipenv
 
@@ -23,8 +23,8 @@ python app.py
 
 ## Endpoints
 
-* GET     /product
-* GET     /product/:id
-* POST    /product
-* PUT     /product/:id
-* DELETE  /product/:id
+* GET     /<classname>
+* GET     /<classname>/:id
+* POST    /<classname>
+* PUT     /<classname>/:id
+* DELETE  /<classname>/:id
