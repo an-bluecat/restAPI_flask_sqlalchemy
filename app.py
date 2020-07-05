@@ -19,7 +19,9 @@ from flask_cors import CORS
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 #CORS
-cors = CORS(app)
+cors = CORS(app) #CORS every where, to specify origin, modify below
+# cors = CORS(app, resources={r"/api/*": {"origins": "*"}}) 
+
 # Database
 ENV = 'prod'
 if ENV == 'dev':
