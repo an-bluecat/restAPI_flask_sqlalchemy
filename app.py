@@ -17,7 +17,7 @@ from sqlalchemy.ext.declarative import declarative_base
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 # Database
-ENV = 'dev'
+ENV = 'prod'
 if ENV == 'dev':
     app.debug = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123@localhost/lexus'
@@ -97,7 +97,7 @@ class ECE243(db.Model):
 # Product Schema
 class ratingSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'israting','user', 'comment', 'time', 'likes','rate')
+    fields = ('id', 'israting', 'user', 'comment', 'time', 'likes', 'rate')
 
 # Init schema
 rating_schema = ratingSchema()
