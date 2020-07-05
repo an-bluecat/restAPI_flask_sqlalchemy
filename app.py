@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow 
 import os
 from sqlalchemy.ext.declarative import declarative_base
-
+from flask_cors import CORS
 # Base = declarative_base()
 
 # class Myproduct1(Product, Base):
@@ -13,9 +13,13 @@ from sqlalchemy.ext.declarative import declarative_base
 #     __tablename__ = 'product2'
 
 
+
+
 # Init app
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
+#CORS
+cors = CORS(app)
 # Database
 ENV = 'prod'
 if ENV == 'dev':
@@ -111,7 +115,7 @@ def get_rating(argin):
   return jsonify(result)
 
 def add_rating(className):
-  print(className)
+
   israting = request.json['israting']
   user = request.json['user']
   comment = request.json['comment']
