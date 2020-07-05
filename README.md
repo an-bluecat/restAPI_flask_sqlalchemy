@@ -28,3 +28,7 @@ python app.py
 * POST    /<classname>
 * PUT     /<classname>/:id
 * DELETE  /<classname>/:id
+
+
+
+todo: add rating to database

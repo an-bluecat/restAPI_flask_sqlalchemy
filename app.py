@@ -17,7 +17,7 @@ from sqlalchemy.ext.declarative import declarative_base
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 # Database
-ENV = 'prod'
+ENV = 'dev'
 if ENV == 'dev':
     app.debug = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123@localhost/lexus'
@@ -37,47 +37,59 @@ ma = Marshmallow(app)
 class ECE110(db.Model):
   __tablename__ = 'ECE110'
   id = db.Column(db.Integer, primary_key=True)
+  israting = db.Column(db.Boolean)
   user = db.Column(db.String(100))
-  comment = db.Column(db.String(200))
+  comment = db.Column(db.String(2000))
   time = db.Column(db.String(50))
   likes = db.Column(db.Integer)
+  rate = db.Column(db.Integer)
 
 
-  def __init__(self, user, comment, time, likes):
+  def __init__(self, israting, user, comment, time, likes, rate):
+    self.israting = israting
     self.user = user
     self.comment = comment
     self.time = time
     self.likes = likes
+    self.rate = rate
 
 class ECE297(db.Model):
   __tablename__ = 'ECE297'
   id = db.Column(db.Integer, primary_key=True)
+  israting = db.Column(db.Boolean)
   user = db.Column(db.String(100))
-  comment = db.Column(db.String(200))
+  comment = db.Column(db.String(2000))
   time = db.Column(db.String(50))
   likes = db.Column(db.Integer)
+  rate = db.Column(db.Integer)
 
 
-  def __init__(self, user, comment, time, likes):
+  def __init__(self, israting, user, comment, time, likes, rate):
+    self.israting = israting
     self.user = user
     self.comment = comment
     self.time = time
     self.likes = likes
+    self.rate = rate
 
 class ECE243(db.Model):
   __tablename__ = 'ECE243'
   id = db.Column(db.Integer, primary_key=True)
+  israting = db.Column(db.Boolean)
   user = db.Column(db.String(100))
-  comment = db.Column(db.String(200))
+  comment = db.Column(db.String(2000))
   time = db.Column(db.String(50))
   likes = db.Column(db.Integer)
+  rate = db.Column(db.Integer)
 
 
-  def __init__(self, user, comment, time, likes):
+  def __init__(self, israting, user, comment, time, likes, rate):
+    self.israting = israting
     self.user = user
     self.comment = comment
     self.time = time
     self.likes = likes
+    self.rate = rate
 
 
 
@@ -85,7 +97,7 @@ class ECE243(db.Model):
 # Product Schema
 class ratingSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'user', 'comment', 'time', 'likes')
+    fields = ('id', 'israting','user', 'comment', 'time', 'likes','rate')
 
 # Init schema
 rating_schema = ratingSchema()
@@ -99,12 +111,15 @@ def get_rating(argin):
   return jsonify(result)
 
 def add_rating(className):
+  print(className)
+  israting = request.json['israting']
   user = request.json['user']
   comment = request.json['comment']
   time = request.json['time']
   likes = request.json['likes']
+  rate = request.json['rate']
 
-  new_rating = className(user, comment, time, likes)
+  new_rating = className(israting, user, comment, time, likes, rate)
 
   db.session.add(new_rating)
   db.session.commit()
