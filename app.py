@@ -4,6 +4,8 @@ from flask_marshmallow import Marshmallow
 import os
 from sqlalchemy.ext.declarative import declarative_base
 from flask_cors import CORS
+import statistics
+
 # Base = declarative_base()
 
 # class Myproduct1(Product, Base):
@@ -39,7 +41,7 @@ db = SQLAlchemy(app)
 # Init ma
 ma = Marshmallow(app)
 
-# Product Class/Model
+########################### Product Class/Model ################################
 class ECE110(db.Model):
   __tablename__ = 'ECE110'
   id = db.Column(db.Integer, primary_key=True)
@@ -109,12 +111,24 @@ class ratingSchema(ma.Schema):
 rating_schema = ratingSchema()
 ratings_schema = ratingSchema(many=True)
 
-
+########################### Helper Functions ################################
 
 def get_rating(argin):
   all_ratings = argin.query.all()
   result = ratings_schema.dump(all_ratings)
   return jsonify(result)
+
+def get_average_rate(className):
+  all_ratings = className.query.all()
+  ratings = ratings_schema.dump(all_ratings)
+  total = 0
+  for comment in ratings:
+    total += comment['rate']
+  averageRating = total/len(ratings)
+  print(averageRating)
+  result = {'rate': averageRating}
+  return jsonify(result)
+
 
 def add_rating(className):
 
@@ -138,10 +152,15 @@ def delete_rating(page, id):
   db.session.commit()
 
   return rating_schema.jsonify(rating)
+########################### API ################################
 
 @app.route('/<page>',methods=['GET'])
 def index(page):
     return get_rating(eval(page)) #page is a string, needs to convert to class
+
+@app.route('/<page>/average',methods=['GET'])
+def average(page):
+    return get_average_rate(eval(page)) #page is a string, needs to convert to class
 
 @app.route('/<page>', methods=['POST'])
 def post(page):
