@@ -24,14 +24,14 @@ python app.py
 ## Endpoints
 
 * Get an individule class information:
-  GET     /<classname>
+  GET     #/[classname]
 * Get a class's rating average:
-  GET     /<classname>/average
+  GET     #/[classname]/average
 * Post a rating JSON to a class
-  POST    /<classname>
+  POST    #/[classname]
 <!-- * PUT     /<classname>/:id -->
 * Delete a class rating
-  DELETE  /<classname>/<rating id>
+  DELETE  #/[classname]/[rating id]
 
 
 
