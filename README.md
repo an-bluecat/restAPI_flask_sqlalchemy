@@ -23,15 +23,17 @@ python app.py
 
 ## Endpoints
 
-* GET     /<classname>
-* GET     /<classname>/:id
-* POST    /<classname>
-* PUT     /<classname>/:id
-* DELETE  /<classname>/:id
+* Get an individule class information:
+  GET     /<classname>
+* Get a class's rating average:
+  GET     /<classname>/average
+* Post a rating JSON to a class
+  POST    /<classname>
+<!-- * PUT     /<classname>/:id -->
+* Delete a class rating
+  DELETE  /<classname>/<rating id>
 
 
-
-todo: add rating to database
 
 ## example JSON
 [
