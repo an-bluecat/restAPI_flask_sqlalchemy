@@ -32,3 +32,25 @@ python app.py
 
 
 todo: add rating to database
+
+## example JSON
+[
+  {
+    "comment": "bad", 
+    "id": 3, 
+    "israting": false, 
+    "likes": 0, 
+    "rate": 0, 
+    "time": "2020-07-25-10-3", 
+    "user": "unknown"
+  }, 
+  {
+    "comment": "good", 
+    "id": 7, 
+    "israting": true, 
+    "likes": 0, 
+    "rate": 2, 
+    "time": "not set", 
+    "user": "unknown"
+  }
+]
