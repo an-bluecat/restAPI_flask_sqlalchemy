@@ -23,6 +23,8 @@ python app.py
 
 ## Endpoints
 
+Base URL: https://restapipostgre.herokuapp.com/
+
 * Get an individule class information:
   GET     #/[classname]
 * Get a class's rating average:
@@ -33,6 +35,10 @@ python app.py
 * Delete a class rating
   DELETE  #/[classname]/[rating id]
 
+for example, if you want to get ECE110's information:
+axios.get(https://restapipostgre.herokuapp.com/ECE110)
+if you want to get ECE110's average:
+axios.get(https://restapipostgre.herokuapp.com/ECE110/average)
 
 
 ## example JSON
